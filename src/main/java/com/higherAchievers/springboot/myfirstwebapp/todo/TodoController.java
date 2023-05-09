@@ -1,13 +1,16 @@
 package com.higherAchievers.springboot.myfirstwebapp.todo;
 
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import javax.naming.Binding;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -36,7 +39,12 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/add-todo", method = RequestMethod.POST)
-    public String addNewTodo(ModelMap modelMap, Todo todo) {
+    public String addNewTodo(ModelMap modelMap, @Valid Todo todo, BindingResult result) {
+
+        if(result.hasErrors()) {
+            return "todo";
+        }
+
         String username = (String) modelMap.get("name");
         todoService.addTodo(username, todo.getDescription(), LocalDate.now().plusYears(1),
                 false);
